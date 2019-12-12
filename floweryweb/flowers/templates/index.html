@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+
+<body ng-app="directoryApp" ng-controller="ListingsController">
+	<div id="errorMessage" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+				<div class="alert alert-danger alert-dismissable">
+					<h4 class="alert-heading">ERROR: Insufficient Information</h4>
+					<p>New listing requires front image, back image, and player name</p>
+				</div>
+		</div>
+	</div>
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Edit Listing</h4>
+				</div>
+				<div class="modal-body">
+					<form id="cardEdit">
+						<label>Card front image</label>
+						<img id="editImgFront">
+						<p><input type="file" accept="image/*" id="editCardFront" name='image' /></p>
+						<label>Card back image</label>
+						<img id="editImgBack">
+						<p><input type="file" accept="image/*" id="editCardBack" name='image' /></p>
+						<p><input id="editPlayerName" ng-model="editListing.playerName" placeholder="Player Name"></p>
+						<p><input id="editSport" ng-model="editListing.sport" placeholder="Sport"></p>
+						<p><input id="editTeamName" ng-model="editListing.teamName" placeholder="Team Name"></p>
+						<p><input id="editPlayerPosition" ng-model="editListing.playerPosition" placeholder="Player Position/Role"></p>
+						<p><input id="editCardYear" ng-model="editListing.cardYear" placeholder="Card Year"></p>
+						<p><input id="editCardBrand" ng-model="editListing.cardBrand" placeholder="Card Manufacturer"></p>
+						<div class="checkbox">
+							<label><input id="editHallOfFame" type="checkbox" ng-model="hallOfFame">Hall of Fame</label>
+						</div>
+						<div class="checkbox">
+							<label><input id="editFloridaGator" type="checkbox" ng-model="floridaGator">Florida Gator</label>
+						</div>
+						<input type="submit" class="btn btn-primary" value="Update">
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<!-------section for the navagation bar on the top of the website -------->
+		<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<img src="https://s3.amazonaws.com/sportscardsapp/362d4c6b-96c0-4a10-bdaf-d0815a840795.png" class="icon" />
+				<!--The following code is the nav bar ---->
+				<!-----The follow line is a button that toogles when the window collapse (mobile or minimizing the window)-->
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!----- Left aligned links on the nav bar ----->
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="home.html">Home<span class="sr-only">(current)</span></a>
+					</li>
+
+					<li class="nav-item active">
+						<a class="nav-link" href="user.html">Collection<span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+				<!------ Right aligned links on the nav bar ----->
+				<button class="btn btn-secondary" ng-click="logout()">Log Out</button>
+			</nav>
+			<!------------------------------------------- End of the the nav bar section -------------------------------------------------------------------------------------------------------->
+		</div>
+		<div class="row">
+			<div class="col-sm-9">
+				<input type="text" class="form-control" placeholder="Search Flower" ng-model="Search">
+				<table class="table table-dark table-hover">
+					<tr>
+						<th>Image</th>
+						<th>Genus</th>
+						<th>Species</th>
+						<th>Common Name</th>
+					</tr>
+					<tr ng-repeat="listing in listings | filter : Search | orderBy: 'created_at':true">
+						<td><img src="{{listing.linkToFrontImage}}"></td>
+						<td>
+							<h2>{{listing.playerName}}</h2>
+							<p1>{{listing.playerPosition}}</p1>
+							<p1>{{listing.teamName}}</p1>
+							<p1>{{listing.cardYear}}</p1>
+							<p1>{{listing.cardBrand}}</p1>
+						</td>
+						<td> <button class="btn btn-info" ng-click="setEdit(listing._id)" data-toggle="modal" data-target="#myModal">Edit</button></td>
+						<td> <button class="btn btn-danger" ng-click="deleteListing(listing._id)">Remove</button></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-sm-3">
+				<div class="card">
+					<div class="card-header">
+						<h3>Add New Sighting Information</h3>
+					</div>
+					<div class="card-body">
+						<form id="cardUpload" method="post" enctype="multipart/form-data" action="api/v1/upload">
+							<p><input ng-model="newListing.member" id="playerName" placeholder="Member Name"></p>
+							<p><input ng-model="newListing.flower" placeholder="Flower Name"></p>
+							<p><input ng-model="newListing.location" placeholder="Location"></p>
+							<p><input ng-model="newListing.date" placeholder="Date"></p>
+							<input type="submit" class="btn btn-primary" value="Add">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://code.angularjs.org/1.4.3/angular.js"></script>
+</body>
+</html>
