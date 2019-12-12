@@ -86,19 +86,15 @@
 				<input type="text" class="form-control" placeholder="Search Flower" ng-model="Search">
 				<table class="table table-dark table-hover">
 					<tr>
-						<th>Image</th>
 						<th>Genus</th>
 						<th>Species</th>
 						<th>Common Name</th>
 					</tr>
 					<tr ng-repeat="listing in listings | filter : Search | orderBy: 'created_at':true">
-						<td><img src="{{listing.linkToFrontImage}}"></td>
 						<td>
-							<h2>{{listing.playerName}}</h2>
-							<p1>{{listing.playerPosition}}</p1>
-							<p1>{{listing.teamName}}</p1>
-							<p1>{{listing.cardYear}}</p1>
-							<p1>{{listing.cardBrand}}</p1>
+							<p1>{{listing.GENUS}}</p1>
+							<p1>{{listing.SPECIES}}</p1>
+							<p1>{{listing.COMNAME}}</p1>
 						</td>
 						<td> <button class="btn btn-info" ng-click="setEdit(listing._id)" data-toggle="modal" data-target="#myModal">Edit</button></td>
 						<td> <button class="btn btn-danger" ng-click="deleteListing(listing._id)">Remove</button></td>
